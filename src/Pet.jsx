@@ -1,6 +1,11 @@
-import React from "react";
+// import React from "react";
 
-const Pet = (props) => {
+const Pet = ({ name, animal, breed, location, images, id }) => {
+  let animalImage = "http://pets-images.dev-apis.com/pets/none.jpg";
+  if (images?.length) {
+    animalImage = images[0];
+  }
+
   //   return React.createElement(
   //     "div",
   //     {},
@@ -9,11 +14,23 @@ const Pet = (props) => {
   //     React.createElement("h2", {}, props.breed),
   //   );
   return (
-    <div>
-      <h1>{props.name}</h1>
-      <h2>{props.animal}</h2>
-      <h2>{props.breed}</h2>
-    </div>
+    // <div>
+    //   <h1>{name}</h1>
+    //   <h2>{animal}</h2>
+    //   <h2>{breed}</h2>
+    // </div>
+
+    <a href={`/details/${id}`} className="pet">
+      <div className="image-container">
+        <img src={animalImage} alt={name} />
+      </div>
+      <div className="info">
+        <h1>{name}</h1>
+        <h2>
+          {animal} - {breed} - {location}
+        </h2>
+      </div>
+    </a>
   );
 };
 

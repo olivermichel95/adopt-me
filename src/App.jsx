@@ -1,7 +1,9 @@
 import React from "react";
-import ReactDom from "react-dom";
-import Pet from "./Pet";
+import { createRoot } from "react-dom/client";
+import Search from "./Search";
+// import AppStudy from "./AppStudy";
 
+// import Pet from "./Pet";
 const App = () => {
   // return React.createElement(
   //   "div",
@@ -26,13 +28,15 @@ const App = () => {
   return (
     <div>
       <h1>Adopt Me!</h1>
-      <Pet name="Max" animal="Dog" breed="Golden Retriever" />
+      {/* <Pet name="Max" animal="Dog" breed="Golden Retriever" />
       <Pet name="Lily" animal="Cat" breed="Persian" />
-      <Pet name="Koko" animal="Bird" breed="Cocktail" />
+      <Pet name="Koko" animal="Bird" breed="Cocktail" /> */}
+      <Search />
     </div>
   );
 };
 
 const container = document.getElementById("root");
-const root = ReactDom.createRoot(container);
+const root = createRoot(container);
 root.render(React.createElement(App));
+// root.render(React.createElement(AppStudy));
