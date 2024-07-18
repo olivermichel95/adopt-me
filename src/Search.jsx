@@ -11,7 +11,6 @@ const animalOptions = [
 ];
 
 const Search = () => {
-  // states
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
   const [selectedBreed, setSelectedBreed] = useState("");
@@ -32,22 +31,26 @@ const Search = () => {
     }
   }, [animal]);
 
+  const fetchPets = async () => {
+    const response = await fetch(
+      `https://pets-v2.dev-apis.com/pets?location=${location}&animal=${animal}&breed=${selectedBreed}`,
+    );
+    const result = await response.json();
+    setPets(result.pets);
+  };
   useEffect(() => {
-    const fetchPets = async () => {
-      const response = await fetch(
-        `https://pets-v2.dev-apis.com/pets?location=${location}&animal=${animal}&breed=${selectedBreed}`,
-      );
-      const result = await response.json();
-      setPets(result.pets);
-    };
-
     fetchPets();
-  }, [location, animal, selectedBreed]);
+  }, []);
 
   return (
     <div>
       <div className="search-params">
-        <form action="">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            fetchPets();
+          }}
+        >
           <label htmlFor="location">Location: </label>
           <input
             type="text"
@@ -99,4 +102,5 @@ const Search = () => {
     </div>
   );
 };
+
 export default Search;
