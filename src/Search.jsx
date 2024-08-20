@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Pet from "./Pet";
 import Results from "./Results";
 
 const animalOptions = [
@@ -21,7 +20,7 @@ const Search = () => {
     if (animal) {
       const fetchBreeds = async () => {
         const response = await fetch(
-          `https://pets-v2.dev-apis.com/breeds?animal=${animal}`,
+          `https://pets-v2.dev-apis.com/breeds?animal=${animal}`, // animal deh eh bzbt beta3t ehh?
         );
         const result = await response.json();
         setBreeds(result.breeds);
@@ -38,6 +37,7 @@ const Search = () => {
     const result = await response.json();
     setPets(result.pets);
   };
+
   useEffect(() => {
     fetchPets();
   }, []);
@@ -48,7 +48,7 @@ const Search = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            fetchPets();
+            fetchPets(); // leh gebt deh hena ?
           }}
         >
           <label htmlFor="location">Location: </label>

@@ -1,9 +1,13 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import Search from "./Search";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import PetDetails from "./PetDetails"; // default export
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from "./ErrorBoundary";
+import PopupMessage from "./components/PopupMessage";
+import { Provider, useSelector } from "react-redux";
+import store from "./redux/store";
 // import AppStudy from "./AppStudy";
 
 // import Pet from "./Pet";
@@ -12,45 +16,45 @@ import PetDetails from "./PetDetails"; // default export
  * Dynamic routing:
  *  lama ykoon 3andy page lyha style sabet bs el content bta3ha bya5talef 3ala 7asab el resource el ana ba3melo show
  */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
 const App = () => {
-  // return React.createElement(
-  //   "div",
-  //   {},
-  //   React.createElement("h1", null, "Adopt Me!"),
-  //   React.createElement(Pet, {
-  //     name: "Max",
-  //     animal: "Dog",
-  //     breed: "Golden Retriever",
-  //   }),
-  //   React.createElement(Pet, {
-  //     name: "Lily",
-  //     animal: "Cat",
-  //     breed: "Persian",
-  //   }),
-  //   React.createElement(Pet, {
-  //     name: "koko",
-  //     animal: "bird",
-  //     breed: "cocktail",
-  //   }),
-  // );
+  const popupState = useSelector((state) => state.popup);
+
   return (
     <div>
-      <h1>Adopt Me!</h1>
+      {popupState?.show && (
+        <PopupMessage type={popupState.type} message={popupState.message} />
+      )}
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Search />} />
-          <Route path="/details/:petId" element={<PetDetails />} />
-        </Routes>
+        <ErrorBoundary>
+          <Link to="/">
+            <h1>Adopt Me!</h1>
+          </Link>
+          <QueryClientProvider client={queryClient}>
+            <Routes>
+              <Route path="/" element={<Search />} />
+              <Route path="/details/:petId" element={<PetDetails />} />
+              {/* <Route path="/test" element={<Test />} /> */}
+            </Routes>
+          </QueryClientProvider>
+        </ErrorBoundary>
       </BrowserRouter>
-      {/* <Pet name="Max" animal="Dog" breed="Golden Retriever" />
-      <Pet name="Lily" animal="Cat" breed="Persian" />
-      <Pet name="Koko" animal="Bird" breed="Cocktail" /> */}
     </div>
   );
 };
 
 const container = document.getElementById("root");
 const root = createRoot(container);
-root.render(React.createElement(App));
-// root.render(React.createElement(AppStudy));
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+);

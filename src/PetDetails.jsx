@@ -1,40 +1,56 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import fetchPetDetails from "./fetchPetDetails";
+import Carousel from "./Carousel";
+import { useDispatch } from "react-redux";
+import { popupReduxActions } from "./redux/slices/popup-slice";
 
-const PetDetails = () => {
-  /**
-   * {
-   *    petId: 3,
-   * }
-   */
-  const { petId } = useParams(); // object destructuring
+const Details = () => {
+  const { petId } = useParams();
+  const dispatch = useDispatch();
+  const results = useQuery(["detailsCachingKey", petId], fetchPetDetails);
 
-  const [pet, setPet] = useState();
+  if (results.isLoading) {
+    return (
+      <div className="loading-pane">
+        <h2 className="loader">🐶 🐣 🐰</h2>
+      </div>
+    );
+  }
+  const pet = results.data.pets[0]; //msh fahmhaa!
 
-  // mayenfa3sh t3mel el function bta3et el useEffect as an async function
-  useEffect(() => {
-    if (petId) {
-      // el code el hena hay run b3d ma el component y5alas el rendering bta3o
-      const fetchPet = async () => {
-        const response = await fetch(
-          `https://pets-v2.dev-apis.com/pets?id=${petId}`,
-        );
-        const fetchedPet = await response.json();
-
-        if (
-          fetchedPet &&
-          typeof fetchedPet === "object" &&
-          "pets" in fetchedPet
-        ) {
-          setPet(fetchedPet.pets.length > 0 ? fetchedPet.pets[0] : undefined);
-        }
-      };
-
-      fetchPet();
+  const adoptClickHandler = () => {
+    if (pet?.animal === "dog") {
+      // show success message
+      dispatch(
+        popupReduxActions.showPopup({
+          type: "success",
+          message: "Pet adopted successfully!",
+        }),
+      );
+    } else {
+      dispatch(
+        popupReduxActions.showPopup({
+          type: "error",
+          message: "You can only adopt dogs!",
+        }),
+      );
     }
-  }, [petId]);
+  };
 
-  return <h3>In pet details</h3>;
+  return (
+    <div className="details">
+      <Carousel images={pet.images} />
+      <div>
+        <h1>{pet.name}</h1>
+      </div>
+      <h2>
+        {pet.animal} - {pet.breed} - {pet.city} - {pet.state}
+      </h2>
+      <button onClick={adoptClickHandler}>Adopt {pet.name}</button>
+      <p>{pet.description}</p>
+    </div>
+  );
 };
 
-export default PetDetails;
+export default Details;
